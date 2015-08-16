@@ -25,7 +25,7 @@ which will generate a footprint file
 
 	You_Shouldn_t_Have_Unsoldered_This.fp
 
-that will contain the text. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text.
+that will contain the text. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text, but, you will need to escape characters that the shell might take exception to, and the escape character may end up getting rendered in the footprint text, until such time as I support excape characters a bit better.
 
 Step 3)
 
