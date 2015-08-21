@@ -55,7 +55,7 @@ Usage:
     and X.XXXX is an optional magnification ratio; default = 1.0)
 
     If run without any command line arguments, a demonstration footprint file
-    called demonstration.fp, will be generated
+    called demonstration1234567890.fp, will be generated
 
 Installation:
 
@@ -71,5 +71,5 @@ put it in a suitable directory with the same subdirectories and contents.
 
 user@box:~$  javac FootprintTextForPCB.java
 
-and that should be it, you are now ready to use the FootprinTextForPCB utility.
+and that should be it, you are now ready to use the FootprintTextForPCB utility.
 

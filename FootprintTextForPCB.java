@@ -68,7 +68,7 @@ public class FootprintTextForPCB {
         + tester.generateGEDAelement(0,0,magnificationRatio)
         + ")\n";
     
-    String filename = workingText.replaceAll("[^a-zA-Z1-9-]", "_");
+    String filename = workingText.replaceAll("[^a-zA-Z0-9-]", "_");
 
     if (magnificationRatio != 1.0) {
       filename = filename + "-" + magnificationRatio + "x.fp";
