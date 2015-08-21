@@ -7,7 +7,7 @@ Copyright (C) 2015 Erich S. Heinzle, a1039181@gmail.com
 
 This is a command line utility for turning text strings into silkscreen line elements which can then be added to footprints. PCB does not support text elements in footprints, but does support silk screen lines. Without a utility of this nature, those making footprints and seeking to add text have to hand draw the desired text.
 
-v1.0 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil (imperial, square bracketed) units. 
+v1.1 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil (imperial, square bracketed) units. 
 
 Hints for usage:
 
