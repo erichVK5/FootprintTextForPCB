@@ -283,24 +283,24 @@ public class HersheySansFontClass {
     //   System.out.println("fontData[0][0]" + fontData[0][0] + "fontData[0][1]" + fontData[0][1] + "fontData[0][2]" + fontData[0][2]);
     int index = ((c-32)*2)+1; // every second row of our array of long vectors has the silk element descriptors
     String elements = "";
-    if ((c-32) > 0) { // i.e. if not the empty space character = ASCII32
-      long [] strokes = fontData[index];
-      // magRatio is the footprint magnification ratio, not the font magnification ratio
-      // we apply font magnification with fontMagnificationRatio elsewhere   
-      elements = generateSilk(c, strokes, xOffset, yOffset, magRatio, metric);
-    }
+    long [] strokes = fontData[index];
+    // magRatio is the footprint magnification ratio, not the font magnification ratio
+    // we apply font magnification with fontMagnificationRatio elsewhere   
+    elements = generateSilk(c, strokes, xOffset, yOffset, magRatio, metric);
     return elements;
   }
 
   public String drawChar(int c, long xOffset, long yOffset, boolean metric) {
     // System.out.println("fontData[0][0]" + fontData[0][0] + "fontData[0][1]" + fontData[0][1] + "fontData[0][2]" + fontData[0][2]);
     int index = ((c-32)*2)+1; // every second row of our array of long vectors has the silk element descriptors 
-    long [] strokes = fontData[index];
-    double magRatio = 1.0; // default 1.0
     // we are not magnifying beyond kicad definition specified requirements 
+    double magRatio = 1.0; // default 1.0
+    String elements = "";
+    long [] strokes = fontData[index];
     // magRatio is the footprint magnification ratio, not the font magnification ratio
     // we apply font magnification with fontMagnificationRatio elsewhere   
-    return generateSilk(c, strokes, xOffset, yOffset, magRatio, metric);
+    elements = generateSilk(c, strokes, xOffset, yOffset, magRatio, metric);
+    return elements;
   }
 
   public String drawYCentredChar(int c, long xOffset, long yOffset, double magRatio, boolean metric) {
@@ -326,17 +326,19 @@ public class HersheySansFontClass {
     // we don't use the metric flag for now
     // now, we try to make the final stroke thickness more
     // visually appealing after magnification
-    long finalThickness = (long)magnify*thickness(c);
-    if ((finalThickness > (long)((width('m')/6.0))) && (finalThickness > defaultMinimumThickness)){
+    if ((c-32) > 0) { // i.e. if not the empty space character = ASCII32
+      long finalThickness = (long)magnify*thickness(c);
+      if ((finalThickness > (long)((width('m')/6.0))) && (finalThickness > defaultMinimumThickness)){
         finalThickness = (long)((width('m')/6.0)*magRatio);
+      }
+      for (int i = 0; i < strokes.length; i = i + 4) {
+        output = output + "ElementLine[" +
+            (long)(magnify*strokes[i] + offsetX) + " " + (long)(magnify*(strokes[i+1] + offsetY)) + " " + 
+            (long)(magnify*strokes[i+2] + offsetX) + " " + (long)(magnify*(strokes[i+3] + offsetY)) + " " +
+            finalThickness + "]\n"; // try to moderate thicknening, to improve visual appeal
+      }
+      output = output + "#\n";
     }
-    for (int i = 0; i < strokes.length; i = i + 4) {
-      output = output + "ElementLine[" +
-          (long)(magnify*strokes[i] + offsetX) + " " + (long)(magnify*(strokes[i+1] + offsetY)) + " " + 
-          (long)(magnify*strokes[i+2] + offsetX) + " " + (long)(magnify*(strokes[i+3] + offsetY)) + " " +
-          finalThickness + "]\n"; // try to moderate thicknening, to improve visual appeal
-    }
-    output = output + "#\n";
     return output;
   }
 }
