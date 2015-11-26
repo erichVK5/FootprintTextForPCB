@@ -49,10 +49,12 @@ Proceed now, as you normally would, to convert your collection of elements (whic
 
 Usage:
 
-    java FootprintTextForPCB -t "my Text For Conversion To Silkscreen Stroke Elements" -m X.XXXX
+    java FootprintTextForPCB -t "Text For Conversion to .fp" -m X.XXXX -a YYYY
 
     "my Text For Conversion To Silkscreen Stroke Elements" is ASCII text, which can include spaces,
     and X.XXXX is an optional magnification ratio; default = 1.0)
+    and YYYY is an optional integer argument giving the rotation of the text
+    counterclockwise from the x-axis in decidegrees, i.e. use 18000 for 180 degrees
 
     If run without any command line arguments, a demonstration footprint file
     called demonstration1234567890.fp, will be generated

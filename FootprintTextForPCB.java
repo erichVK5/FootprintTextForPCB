@@ -35,9 +35,14 @@ public class FootprintTextForPCB {
 
   public static void main (String [] args) throws IOException {
 
-    FootprintText tester = new FootprintText();
     String workingText = "demonstration1234567890";
     float magnificationRatio = 1.0f;
+    double angle = 0;
+
+    // this is the class which contains the font definition
+    // and methods to generate gEDA PCB layout compatible 
+    // line elements to render the text
+    HersheySansFontClass hershey = new HersheySansFontClass();
 
     // with the preliminaries out of the way we check
     // if the user has shared any ones and zeroes with us
@@ -45,13 +50,17 @@ public class FootprintTextForPCB {
     if (args.length != 0) {
       for (int index = 0; index < args.length; index ++) {
         if (args[index].startsWith("-t") && ((index + 1) < args.length)) {
-          workingText = args[index + 1];
+          workingText = args[index + 1];  // text to be rendered
           index++;
         }
         else if (args[index].startsWith("-m") && ((index + 1) < args.length)) {
-          magnificationRatio = Float.parseFloat(args[index + 1]);
-          index++;
+          magnificationRatio = Float.parseFloat(args[index + 1]); 
+          index++;  // magnification ratio to be used
         }
+        else if (args[index].startsWith("-a") && ((index + 1) < args.length)) {
+          angle = Math.PI*((Integer.parseInt(args[index + 1]))/18000.0);
+          index++; //magnification angle at which to render, CCW is positive
+        } // in decedigrees, i.e. 18000 is used for 180 degrees
         else {
           printUsage();
           System.exit(0);
@@ -59,13 +68,10 @@ public class FootprintTextForPCB {
       }
     }
 
-    // we tell the FootprintText calss what to display
-    tester.populateElement(workingText, true);
-
     String output = "Element[\"\" \"" 
         + workingText 
         + "\" \"\" \"\" 0 0 0 -4000 0 100 \"\"]\n("
-        + tester.generateGEDAelement(0,0,magnificationRatio)
+        + hershey.renderString(workingText,0,0,angle,magnificationRatio)
         + ")\n";
     
     String filename = workingText.replaceAll("[^a-zA-Z0-9-]", "_");
@@ -89,9 +95,11 @@ public class FootprintTextForPCB {
   }
 
   public static void printUsage() {
-    System.out.println("\nUsage: \n\n    java FootprintTextForPCB -t \"my Text For Conversion To Silkscreen Stroke Elements\" -m X.XXXX\n");
-    System.out.println("    \"my Text For Conversion To Silkscreen Stroke Elements\" is ASCII text, which can include spaces,");
+    System.out.println("\nUsage: \n\n    java FootprintTextForPCB -t \"Text for conversion to .fp\" -m X.XXXX -a YYYY\n");
+    System.out.println("    \"Text for conversion to .fp\" is ASCII text, which can include spaces,");
     System.out.println("    and X.XXXX is an optional magnification ratio; default = 1.0)\n");
+    System.out.println("    and YYYY is an optional angulation of the text, counterclockwise positive, in deci-degrees\n"); 
+    System.out.println("    i.e. 4500 is 45 degrees counterclockwise, 18000 is upside down, 180 degrees\n");
     System.out.println("    If run without any command line arguments, a demonstration footprint file")
 ;
     System.out.println("    called demonstration1234567890.fp, will be generated\n"); 
