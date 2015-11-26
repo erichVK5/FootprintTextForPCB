@@ -19,13 +19,13 @@ Step 2)
 
 generate each needed bit of text as a footprint with this utility, i.e.
 
-	java FootprintTextForPCB -t "You Shouldn't Have Unsoldered This" -m 1.3 -a 4500
+	java FootprintTextForPCB -t "You Shouldn't Have Unsoldered This" -m 1.3 -a 450
 
 which will generate a footprint file
 
 	You_Shouldn_t_Have_Unsoldered_This.fp
 
-that will contain the text, 1.3 times larger than the default gEDA PCB text size, and angled at 45 degrees, based on the supplied, optional, 4500 decidegree command line -a argument. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text, but, you will need to escape characters that the shell might take exception to, and the escape character may end up getting rendered in the footprint text, until such time as I support escape characters a bit better.
+that will contain the text, 1.3 times larger than the default gEDA PCB text size, and angled at 45 degrees, based on the supplied, optional, 450 decidegree command line -a argument. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text, but, you will need to escape characters that the shell might take exception to, and the escape character may end up getting rendered in the footprint text, until such time as I support escape characters a bit better.
 
 Step 3)
 
@@ -54,7 +54,7 @@ Usage:
     "my Text For Conversion To Silkscreen Stroke Elements" is ASCII text, which can include spaces,
     and X.XXXX is an optional magnification ratio; default = 1.0)
     and YYYY is an optional integer argument giving the rotation of the text
-    counterclockwise from the x-axis in decidegrees, i.e. use 18000 for 180 degrees
+    counterclockwise from the x-axis in decidegrees, i.e. use 1800 for 180 degrees
 
     If run without any command line arguments, a demonstration footprint file
     called demonstration1234567890.fp, will be generated
