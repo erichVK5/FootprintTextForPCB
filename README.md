@@ -19,13 +19,13 @@ Step 2)
 
 generate each needed bit of text as a footprint with this utility, i.e.
 
-	java FootprintTextForPCB -t "You Shouldn't Have Unsoldered This" -m 1.3
+	java FootprintTextForPCB -t "You Shouldn't Have Unsoldered This" -m 1.3 -a 4500
 
 which will generate a footprint file
 
 	You_Shouldn_t_Have_Unsoldered_This.fp
 
-that will contain the text. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text, but, you will need to escape characters that the shell might take exception to, and the escape character may end up getting rendered in the footprint text, until such time as I support excape characters a bit better.
+that will contain the text, 1.3 times larger than the default gEDA PCB text size, and angled at 45 degrees, based on the supplied, optional, 4500 decidegree command line -a argument. It will recognise spaces and any of the usual ASCII characters that PCB can ordinarily display as text, but, you will need to escape characters that the shell might take exception to, and the escape character may end up getting rendered in the footprint text, until such time as I support escape characters a bit better.
 
 Step 3)
 
