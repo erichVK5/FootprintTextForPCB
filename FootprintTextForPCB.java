@@ -58,9 +58,9 @@ public class FootprintTextForPCB {
           index++;  // magnification ratio to be used
         }
         else if (args[index].startsWith("-a") && ((index + 1) < args.length)) {
-          angle = Math.PI*((Integer.parseInt(args[index + 1]))/18000.0);
+          angle = Math.PI*((Integer.parseInt(args[index + 1]))/1800.0);
           index++; //magnification angle at which to render, CCW is positive
-        } // in decedigrees, i.e. 18000 is used for 180 degrees
+        } // in decedigrees, i.e. 1800 is used for 180 degrees
         else {
           printUsage();
           System.exit(0);
@@ -99,7 +99,7 @@ public class FootprintTextForPCB {
     System.out.println("    \"Text for conversion to .fp\" is ASCII text, which can include spaces,");
     System.out.println("    and X.XXXX is an optional magnification ratio; default = 1.0)\n");
     System.out.println("    and YYYY is an optional angulation of the text, counterclockwise positive, in deci-degrees\n"); 
-    System.out.println("    i.e. 4500 is 45 degrees counterclockwise, 18000 is upside down, 180 degrees\n");
+    System.out.println("    i.e. 450 is 45 degrees counterclockwise, 1800 is upside down, 180 degrees\n");
     System.out.println("    If run without any command line arguments, a demonstration footprint file")
 ;
     System.out.println("    called demonstration1234567890.fp, will be generated\n"); 
