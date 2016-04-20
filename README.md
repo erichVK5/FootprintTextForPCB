@@ -75,3 +75,13 @@ user@box:~$  javac FootprintTextForPCB.java
 
 and that should be it, you are now ready to use the FootprintTextForPCB utility.
 
+Compiling a native binary:
+
+It seems gcj will compile a native binary executable from java source if asked nicely.
+
+	sudo apt-get install gcj-jdk
+	gcj -I src -C *.java
+	gcj -I src --main=FootprintTextForPCB *.class
+	./a.out -t "test"
+
+Compiling to byte code first, as above, appears to avoid a bug affecting compilation directly to native code in one step.
