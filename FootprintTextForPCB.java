@@ -30,6 +30,7 @@
 
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FootprintTextForPCB {
 
@@ -43,6 +44,8 @@ public class FootprintTextForPCB {
     // and methods to generate gEDA PCB layout compatible 
     // line elements to render the text
     HersheySansFontClass hershey = new HersheySansFontClass();
+
+    //hershey.generateNewArray();
 
     // with the preliminaries out of the way we check
     // if the user has shared any ones and zeroes with us
@@ -60,7 +63,13 @@ public class FootprintTextForPCB {
         else if (args[index].startsWith("-a") && ((index + 1) < args.length)) {
           angle = Math.PI*((Integer.parseInt(args[index + 1]))/1800.0);
           index++; //magnification angle at which to render, CCW is positive
-        } // in decedigrees, i.e. 1800 is used for 180 degrees
+        } // in decidegrees, i.e. 1800 is used for 180 degrees
+        else if (args[index].startsWith("-c")) {
+          hershey.cyrillicMode();
+        }
+        else if (args[index].startsWith("-g")) {
+          hershey.greekMode();
+        }
         else {
           printUsage();
           System.exit(0);
@@ -68,11 +77,35 @@ public class FootprintTextForPCB {
       }
     }
 
+    if (workingText.contains("U+")) {
+
+    }
+
     String output = "Element[\"\" \"" 
         + workingText 
-        + "\" \"\" \"\" 0 0 0 -4000 0 100 \"\"]\n("
-        + hershey.renderString(workingText,0,0,angle,magnificationRatio)
-        + ")\n";
+        + "\" \"\" \"\" 0 0 0 -4000 0 100 \"\"]\n(";
+
+    if (workingText.contains("U+")) {
+      ArrayList<Integer> unicode
+          = stringToUnicode(workingText, false); 
+
+      //testing
+      unicode = new ArrayList<Integer>();
+      for (int i = 32; i < 127; i++) {
+        unicode.add(i);
+      }
+      //testing
+
+      output = output
+          + hershey.renderString(unicode,0,0,angle,magnificationRatio)
+          + ")\n";
+    } else {
+      output = output
+          + hershey.renderString(workingText,0,0,angle,magnificationRatio)
+          + ")\n"; 
+    }
+
+
     
     String filename = workingText.replaceAll("[^a-zA-Z0-9-]", "_");
 
@@ -104,5 +137,199 @@ public class FootprintTextForPCB {
 ;
     System.out.println("    called demonstration1234567890.fp, will be generated\n"); 
   }
+
+static int hexadecimalToInteger(char textChar, int power) {
+    int hexVal = 0;
+    switch (textChar) {
+    case '0':
+        break;
+    case '1':
+        hexVal += 1*Math.pow(16,power);
+        break;
+    case '2':
+        hexVal += 2*Math.pow(16,power);
+        break;
+    case '3':
+        hexVal += 3*Math.pow(16,power);
+        break;
+    case '4':
+        hexVal += 4*Math.pow(16,power);
+        break;
+    case '5':
+        hexVal += 5*Math.pow(16,power);
+        break;
+    case '6':
+        hexVal += 6*Math.pow(16,power);
+        break;
+    case '7':
+        hexVal += 7*Math.pow(16,power);
+        break;
+    case '8':
+        hexVal += 8*Math.pow(16,power);
+        break;
+    case '9':
+        hexVal += 9*Math.pow(16,power);
+        break;
+    case 'A':
+        hexVal += 10*Math.pow(16,power);
+        break;
+    case 'a':
+        hexVal += 10*Math.pow(16,power);
+        break;
+    case 'B':
+        hexVal += 11*Math.pow(16,power);
+        break;
+    case 'b':
+        hexVal += 11*Math.pow(16,power);
+        break;
+    case 'C':
+        hexVal += 12*Math.pow(16,power);
+        break;
+    case 'c':
+        hexVal += 12*Math.pow(16,power);
+        break;
+    case 'D':
+        hexVal += 13*Math.pow(16,power);
+        break;
+    case 'd':
+        hexVal += 13*Math.pow(16,power);
+        break;
+    case 'E':
+        hexVal += 14*Math.pow(16,power);
+        break;
+    case 'e':
+        hexVal += 14*Math.pow(16,power);
+        break;
+    case 'F':
+        hexVal += 15*Math.pow(16,power);
+        break;
+    case 'f':
+        hexVal += 15*Math.pow(16,power);
+        break;
+    default:
+        hexVal = 0;
+    }
+    //System.out.println("Hexadecimal: " + textChar 
+    //                   + " ->Integer: " + hexVal);
+    return hexVal;
+}
+
+static int unicodeToInteger(String text) {
+  boolean verbose = false;
+  int hexVal = 0;
+  //System.out.println("About to process unicode text: " + text);
+  for (int textChar = 0; 
+       textChar < (text.length()-2); // skip the "U+" start
+       textChar++) {
+    if (verbose) {
+      System.out.println("Processing: " 
+                         + text.charAt(text.length()-textChar-1));
+    }
+    char c;
+    c = text.charAt(text.length()-textChar-1);
+    hexVal += hexadecimalToInteger(c, textChar);
+  }
+  return hexVal;
+}
+
+static ArrayList<Integer> stringToUnicode(String textToParse,
+                      boolean extraSpaces ) {
+    String tempString = textToParse;
+    String tempString2;
+    boolean verbose = false;
+    ArrayList<Integer> glyphsToRender = new ArrayList<Integer>();
+    while (tempString.length() > 0) {
+        if ((tempString.length() < 4) ||
+            (tempString.length() == 5)) {
+            for (int index = 0; index < tempString.length(); index++) {
+                glyphsToRender.add((int)tempString.charAt(index));
+                if (verbose) {
+                  System.out.println("Processing: "
+                                     + tempString.charAt(index));
+                }
+                if (extraSpaces) {
+                  glyphsToRender.add(32); // add space
+                }
+            }
+            tempString = "";
+            if (verbose) {
+                System.out.println("textToParse length: "
+                                   + tempString.length());
+            }
+        } else if (tempString.startsWith("U+")
+                   && ((tempString.length() == 4)
+                       || (tempString.length() == 6))) {
+          glyphsToRender.add(unicodeToInteger(tempString));
+          tempString = "";
+          if (verbose) {
+            System.out.println("textToParse length: "
+                               + tempString.length());
+          }
+        } else if (tempString.startsWith("U+")
+                   && (tempString.length() > 5)
+                   && (tempString.substring(4,6).equals("U+"))) {
+            tempString2 = tempString.substring(0,4);
+            tempString = tempString.substring(4);
+            if (verbose) {
+                System.out.println("textToParse length: "
+                                   + tempString.length());
+            }
+            glyphsToRender.add(unicodeToInteger(tempString2));
+        } else if (tempString.startsWith("U+")
+                   && (tempString.length() > 7)
+                   && (tempString.substring(6,8).equals("U+"))) {
+            tempString2 = tempString.substring(0,6);
+            tempString = tempString.substring(6);
+            //tempString = tempString.substr(6);
+            glyphsToRender.add(unicodeToInteger(tempString2));
+        } else if (tempString.startsWith("U+")
+                   && (tempString.length() > 9)
+                   && (tempString.substring(8,10).startsWith("U+"))) {
+            tempString2 = tempString.substring(0,8);
+            //tempString = tempString.substr(8);
+            tempString = tempString.substring(8);
+            if (verbose) {
+              System.out.println("textToParse length: "
+                                 + tempString.length());
+            }
+            glyphsToRender.add(unicodeToInteger(tempString2));
+        } else if (tempString.startsWith("U+")
+                   && (tempString.length() > 7)) {
+            tempString2 = tempString.substring(0,8);
+            //tempString = tempString.substr(8);
+            tempString = tempString.substring(8);
+            if (verbose) {
+              System.out.println("textToParse length: "
+                                 + tempString.length());
+            }
+            glyphsToRender.add(unicodeToInteger(tempString2));
+        } else {
+            glyphsToRender.add((int)tempString.charAt(0));
+            if (extraSpaces) {
+              glyphsToRender.add(32); // add space
+            }
+            //tempString = tempString.substr(1);
+            tempString = tempString.substring(1);
+            if (verbose) {
+              System.out.println("TempString now: "
+                                 + tempString);
+            }
+        }
+     }
+    if (extraSpaces) {
+      glyphsToRender.add(32); // add space
+    }
+    if (verbose) {
+      System.out.println("Code vector size: " 
+                         + glyphsToRender.size());
+      for (int index = 0; index < glyphsToRender.size(); index++) {
+        System.out.println("ASCII: "
+                           + glyphsToRender.get(index));
+      }
+    }
+    return glyphsToRender;
+}
+
+
 
 }
