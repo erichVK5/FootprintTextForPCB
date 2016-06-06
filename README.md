@@ -9,7 +9,7 @@ This is a command line utility for turning text strings into silkscreen line ele
 
 v1.1 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil (imperial, square bracketed) units. 
 
-v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic and Greek are now working, if the -c or -g flag is used, and text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping for Cyrillic.
+v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic, Greek and German Gothic are now working, if the -c, -g or -gg flag is used. For cyrillic, text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping for Cyrillic. Greek mapping is phonetic as well.
 
 Hints for usage:
 
@@ -62,6 +62,8 @@ Usage:
 
     Alternatively, the -g flag will render the letters phonetically in Greek.
 
+    Alternatively, the -gg flag will render the letters phonetically in German Gothic.
+
     If run without any command line arguments, a demonstration footprint file
     called demonstration1234567890.fp, will be generated
 
@@ -77,6 +79,11 @@ if you cut and paste and execute the following text, the resulting footprint wil
 
     java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}" -g
 
+Hints for German Gothic:
+
+if you cut and paste and execute the following text, the resulting footprint will be rendered with German Gothic:
+
+    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}" -gg
 
 TODO:
 
