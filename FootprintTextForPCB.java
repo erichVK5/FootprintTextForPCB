@@ -45,7 +45,6 @@ public class FootprintTextForPCB {
     // line elements to render the text
     PCBFontWrangler font = new PCBFontWrangler();
 
-    //font.generateNewArray();
 
     // with the preliminaries out of the way we check
     // if the user has shared any ones and zeroes with us
@@ -66,9 +65,15 @@ public class FootprintTextForPCB {
         } // in decidegrees, i.e. 1800 is used for 180 degrees
         else if (args[index].startsWith("-c")) {
           font.cyrillicMode();
+          font.setMinimumThickness(600);
         }
-        else if (args[index].startsWith("-g")) {
+        else if (args[index].equals("-g")) {
           font.greekMode();
+          font.setMinimumThickness(650);
+        }
+        else if (args[index].equals("-gg")) {
+          font.GGothicMode();
+          font.setMinimumThickness(600); // looks better than >600.
         }
         else {
           printUsage();
@@ -76,6 +81,8 @@ public class FootprintTextForPCB {
         }        
       }
     }
+
+    //font.generateNewArray(); //only used for creating new fonts
 
     if (workingText.contains("U+")) {
 
@@ -104,8 +111,6 @@ public class FootprintTextForPCB {
           + font.renderString(workingText,0,0,angle,magnificationRatio)
           + ")\n"; 
     }
-
-
     
     String filename = workingText.replaceAll("[^a-zA-Z0-9-]", "_");
 
