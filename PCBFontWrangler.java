@@ -29,7 +29,6 @@
 //
 
 import java.util.ArrayList;
-//import java.util.Printwriter;
 import java.io.*;
 
 
@@ -45,22 +44,35 @@ public class PCBFontWrangler {
   double fontMagnificationRatio = 1.0;
   long defaultMinimumThickness = 1000; // in centimils, i.e. 10 mil line thickness minimum 
 
-  boolean cyrillicMode = false;
-  boolean greekMode = false;
-
   public void greekMode() {
-    greekMode = true;
     fontData = HersheyGreek.fontData;
-    if (cyrillicMode) {
-      cyrillicMode = false; // can't be both
-    }
   } 
 
   public void cyrillicMode() {
-    cyrillicMode = true;
     fontData = HersheyCyrillic.fontData;
-    if (greekMode) {
-      greekMode = false; // can't be both
+  }
+
+  // we go through these shenanigans because the java compilers
+  // don't like creating static structures over 64k in size, so
+  // we assemble it from pieces within the JVM at runtime.
+  public void GGothicMode() {
+    long [][] fontData1 = HersheyGermanGothic1.fontData;
+    long [][] fontData2 = HersheyGermanGothic2.fontData;
+    long [][] fontData3 = HersheyGermanGothic3.fontData;
+    int tempSize = fontData1.length
+        + fontData2.length
+        + fontData3.length;
+    fontData = new long[tempSize][];
+    for (int i = 0; i < fontData1.length; i++) {
+      fontData[i] = fontData1[i];
+    }
+    int offset = fontData1.length;
+    for (int i = 0; i < fontData2.length; i++) {
+      fontData[i + offset] = fontData2[i];
+    }
+    offset += fontData2.length;
+    for (int i = 0; i < fontData3.length; i++) {
+      fontData[i + offset] = fontData3[i];
     }
   }
 
@@ -71,6 +83,10 @@ public class PCBFontWrangler {
 
   public void PCBFontWrangler(long minimumLineThickness) {
     defaultMinimumThickness = minimumLineThickness;
+  }
+
+  public void setMinimumThickness(long thickness) {
+    defaultMinimumThickness = thickness;
   }
 
   // this returns the character width in centimils
@@ -151,7 +167,7 @@ public class PCBFontWrangler {
   // the following can be used when creating new font data arrays
   // if things like x-offsets need to be fine tuned.
   public void generateNewArray() throws IOException {
-    File tester = new File("SansThing.txt");
+    File tester = new File("newThing.txt");
     PrintWriter output = new PrintWriter(tester);
     for (int i = 0; i < fontData.length; i = i+2) {
 
