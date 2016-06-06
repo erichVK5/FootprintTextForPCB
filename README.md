@@ -9,7 +9,7 @@ This is a command line utility for turning text strings into silkscreen line ele
 
 v1.1 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil (imperial, square bracketed) units. 
 
-v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic is now working, if the -c flag is used, and text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping.
+v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic and Greek are now working, if the -c or -g flag is used, and text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping for Cyrillic.
 
 Hints for usage:
 
@@ -58,16 +58,25 @@ Usage:
     and YYYY is an optional integer argument giving the rotation of the text
     counterclockwise from the x-axis in decidegrees, i.e. use 1800 for 180 degrees
 
-    The -c flag will render the letters phonetically in cyrillic.
+    The -c flag will render the letters phonetically in Cyrillic.
+
+    Alternatively, the -g flag will render the letters phonetically in Greek.
 
     If run without any command line arguments, a demonstration footprint file
     called demonstration1234567890.fp, will be generated
 
 Hints for Cyrillic:
 
-if you cut and paste and execute the following text, the resulting footprint will show how the english keybard layout is mapped to cyrillic:
+if you cut and paste and execute the following text, the resulting footprint will show how the english keyboard layout is mapped to Cyrillic:
 
-    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}~\`"
+    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}~\`" -c
+
+Hints for Greek:
+
+if you cut and paste and execute the following text, the resulting footprint will show how the english keyboard layout is mapped to Greek:
+
+    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}" -g
+
 
 TODO:
 
