@@ -1,5 +1,5 @@
-// HersheySansFontClass.java v1.0
-// Copyright (C) 2015 Erich S. Heinzle, a1039181@gmail.com
+// PCBFontWrangler.java v1.0
+// Copyright (C) 2016 Erich S. Heinzle, a1039181@gmail.com
 
 //    see LICENSE-gpl-v2.txt for software license
 //    see README.txt
@@ -18,12 +18,13 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //    
-//    HersheySansFontClass Copyright (C) 2015 Erich S. Heinzle a1039181@gmail.com
+//    PCBFontWrangler Copyright (C) 2016 Erich S. Heinzle a1039181@gmail.com
 
 //
-//  A font class for use with gEDA PCB for generating silkscreen text
-//  which can be added to footprints for labelling purposes.
-//  The class implements the free Hershey Sans 1 Stroke Font and outputs
+//  A font handling class for use with gEDA PCB for generating
+//  silkscreen text which can be added to footprints for labelling
+//  purposes.
+//  The class implements the various free Hershey Fonts, and outputs
 //  0.01mil (imperial, square bracketed) units. 
 //
 
@@ -32,12 +33,13 @@ import java.util.ArrayList;
 import java.io.*;
 
 
-public class HersheySansFontClass {
+public class PCBFontWrangler {
 
   // we start by defining the jagged long array of stroked font data
   // {width, kerning, thickness}, followed by {x1,y2, x2,y2, ... , xn,yn}
   // for ascii characters 32 -> 126 inclusive, so, 95 characters encoded in total
   // widthstroke thickness of 800 centimils is a bit thick, so will try 545
+
   long [][] fontData = HersheySansOneStroke.fontData; // default
 
   double fontMagnificationRatio = 1.0;
@@ -48,7 +50,7 @@ public class HersheySansFontClass {
 
   public void greekMode() {
     greekMode = true;
-    System.out.println("It's all greek to me");
+    fontData = HersheyGreek.fontData;
     if (cyrillicMode) {
       cyrillicMode = false; // can't be both
     }
@@ -56,6 +58,7 @@ public class HersheySansFontClass {
 
   public void cyrillicMode() {
     cyrillicMode = true;
+    fontData = HersheyCyrillic.fontData;
     if (greekMode) {
       greekMode = false; // can't be both
     }
@@ -63,10 +66,10 @@ public class HersheySansFontClass {
 
   String stringToRender = null;
 
-  public void HersheyFontClass() {
+  public void PCBFontWrangler() {
   }
 
-  public void HersheyFontClass(long minimumLineThickness) {
+  public void PCBFontWrangler(long minimumLineThickness) {
     defaultMinimumThickness = minimumLineThickness;
   }
 
@@ -75,35 +78,20 @@ public class HersheySansFontClass {
     // this is ((Xmax - Xmin) +  kerning), but not thickness
 
     int index = 0;
-    if (cyrillicMode) {
-      index = c-32;
-      return (long)(HersheyCyrillic.fontData[index*2][0]*fontMagnificationRatio);
-    } else if (greekMode) {
-      index = c-32;
-      return (long)(HersheyGreek.fontData[index*2][0]*fontMagnificationRatio);
-    } else if (c >= 1040 && c <= 1103) {
+    if (c >= 1040 && c <= 1103) {
       index = c - 975;
       return (long)(HersheyCyrillic.fontData[index*2][0]*fontMagnificationRatio);
     } else {
       index = c-32;
       return (long)(fontData[index*2][0]*fontMagnificationRatio);
-      //      return (long)(fontData[index*2][0]*fontMagnificationRatio);
     }
   }
 
   // this returns the character kerning in centimils
   public long kerning(int c) {
     int index = 0;
-    System.out.println("Unicode char: " + c);
-    if (cyrillicMode) {
-      index = c-32;
-      return (long)(HersheyCyrillic.fontData[index*2][1]*fontMagnificationRatio);
-    } else if (greekMode) {
-      index = c-32;
-      return (long)(HersheyGreek.fontData[index*2][1]*fontMagnificationRatio);
-    } else if (c >= 1040 && c <= 1103) {
+    if (c >= 1040 && c <= 1103) {
       index = c - 975;
-      System.out.println("Cyrillic index: " + index);
       return (long)(HersheyCyrillic.fontData[index*2][1]*fontMagnificationRatio);
     } else {
       index = c-32;
@@ -116,17 +104,8 @@ public class HersheySansFontClass {
     int index = 0;
     long calculatedThickness = 0;
     //System.out.println("Unicode char: " + c);
-    if (cyrillicMode) {
-      index = c-32;
-      calculatedThickness 
-          = (long)(HersheyCyrillic.fontData[index*2][2]*fontMagnificationRatio);
-    } else if (greekMode) {
-      index = c-32;
-      calculatedThickness 
-          = (long)(HersheyGreek.fontData[index*2][2]*fontMagnificationRatio);
-    } else if (c >= 1040 && c <= 1103) {
+    if (c >= 1040 && c <= 1103) {
       index = c - 975;
-      //System.out.println("Cyrillic index: " + index);
       calculatedThickness
           = (long)(HersheyCyrillic.fontData[index*2][2]*fontMagnificationRatio);
     } else {
@@ -313,11 +292,6 @@ public class HersheySansFontClass {
 
     //testing
     long [] strokes = fontData[index];
-    if (cyrillicMode) {
-      strokes = HersheyCyrillic.fontData[index];
-    } else if (greekMode) {
-      strokes = HersheyGreek.fontData[index];
-    }
 
     // magRatio is the footprint magnification ratio,
     // not the font magnification ratio
@@ -347,11 +321,7 @@ public class HersheySansFontClass {
 
     int index = 0; //((c-32)*2)+1;
 
-    if (cyrillicMode) {
-      index = ((c-32)*2)+1;
-    } else if (greekMode) {
-      index = ((c-32)*2)+1;
-    } else if (c >= 1040 && c <= 1103) {
+    if (c >= 1040 && c <= 1103) {
       index = ((c - 975)*2)+1;
       System.out.println("DrawCentred index: " + index);
     } else {
@@ -363,11 +333,6 @@ public class HersheySansFontClass {
 
     //testing
     long [] strokes = fontData[index];
-    if (cyrillicMode) {
-      strokes = HersheyCyrillic.fontData[index];
-    } else if (greekMode) {
-      strokes = HersheyGreek.fontData[index];
-    }
 
     long centredYoffset = yOffset; // try this + yCentredOffset();
     String results = generateSilk(c, strokes, xOffset, yOffset, theta, magRatio, metric);

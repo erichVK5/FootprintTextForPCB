@@ -43,9 +43,9 @@ public class FootprintTextForPCB {
     // this is the class which contains the font definition
     // and methods to generate gEDA PCB layout compatible 
     // line elements to render the text
-    HersheySansFontClass hershey = new HersheySansFontClass();
+    PCBFontWrangler font = new PCBFontWrangler();
 
-    //hershey.generateNewArray();
+    //font.generateNewArray();
 
     // with the preliminaries out of the way we check
     // if the user has shared any ones and zeroes with us
@@ -65,10 +65,10 @@ public class FootprintTextForPCB {
           index++; //magnification angle at which to render, CCW is positive
         } // in decidegrees, i.e. 1800 is used for 180 degrees
         else if (args[index].startsWith("-c")) {
-          hershey.cyrillicMode();
+          font.cyrillicMode();
         }
         else if (args[index].startsWith("-g")) {
-          hershey.greekMode();
+          font.greekMode();
         }
         else {
           printUsage();
@@ -97,11 +97,11 @@ public class FootprintTextForPCB {
       //testing
 
       output = output
-          + hershey.renderString(unicode,0,0,angle,magnificationRatio)
+          + font.renderString(unicode,0,0,angle,magnificationRatio)
           + ")\n";
     } else {
       output = output
-          + hershey.renderString(workingText,0,0,angle,magnificationRatio)
+          + font.renderString(workingText,0,0,angle,magnificationRatio)
           + ")\n"; 
     }
 
