@@ -11,6 +11,8 @@ v1.1 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil
 
 v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic, Greek and German Gothic are now working, if the -c, -g or -gg flag is used. For cyrillic, text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping for Cyrillic. Greek mapping is phonetic as well.
 
+v1.3 of the utility can export the text as a gschem compatible symbol (.sym) if a -cs (create symbol) flag is used on the command line, for those wishing to embed "mu" or "Omega" on schematics, for capacitance or resistance, for example, or perhaps some cyrillic or simple maths, as graphical elements.
+
 Hints for usage:
 
 Step 1)
@@ -67,6 +69,10 @@ Usage:
     If run without any command line arguments, a demonstration footprint file
     called demonstration1234567890.fp, will be generated
 
+Hints for non english mapping generally.
+
+the " ` " character (usually lives under the tilde " ~ " next to "1") is different to the " ' " character, and will need to be escaped with a "\" to allow alpha to be printed in greek, for example.
+
 Hints for Cyrillic:
 
 if you cut and paste and execute the following text, the resulting footprint will show how the english keyboard layout is mapped to Cyrillic:
@@ -77,13 +83,19 @@ Hints for Greek:
 
 if you cut and paste and execute the following text, the resulting footprint will show how the english keyboard layout is mapped to Greek:
 
-    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}" -g
+    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_\`abcdefghijklmnopqrstuvwxyz{|}'" -g
 
 Hints for German Gothic:
 
 if you cut and paste and execute the following text, the resulting footprint will be rendered with German Gothic:
 
-    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'abcdefghijklmnopqrstuvwxyz{|}" -gg
+    java FootprintTextForPCB -t "$%&ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_\`abcdefghijklmnopqrstuvwxyz{|}'" -gg
+
+Hints for gschem symbol export:
+
+if you want to have exotic text rendered in gschem as a symbol, this can be done with a -cs (create symbol) flag, i.e. to produce a "mu" symbol compatible with 12 point text in gschem, we specify the lower case L (Greek has less letters in the alphabet than English). Note that the resulting symbol will need mirroring and rotation in gschem before it is ready for final use: 
+
+    java FootprintTextForPCB -t "l" -g
 
 TODO:
 
