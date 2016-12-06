@@ -39,6 +39,7 @@ public class FootprintTextForPCB {
     String workingText = "demonstration1234567890";
     float magnificationRatio = 1.0f;
     double angle = 0;
+    boolean createGschemSymbol = false;
 
     // this is the class which contains the font definition
     // and methods to generate gEDA PCB layout compatible 
@@ -63,7 +64,7 @@ public class FootprintTextForPCB {
           angle = Math.PI*((Integer.parseInt(args[index + 1]))/1800.0);
           index++; //magnification angle at which to render, CCW is positive
         } // in decidegrees, i.e. 1800 is used for 180 degrees
-        else if (args[index].startsWith("-c")) {
+        else if (args[index].equals("-c")) {
           font.cyrillicMode();
           font.setMinimumThickness(600);
         }
@@ -75,6 +76,11 @@ public class FootprintTextForPCB {
           font.GGothicMode();
           font.setMinimumThickness(600); // looks better than >600.
         }
+	else if (args[index].equals("-cs")) {
+	  createGschemSymbol = true;
+	  font.exportGSchem();
+          System.out.println("Exporting gschem symbol.");
+	}
         else {
           printUsage();
           System.exit(0);
@@ -88,9 +94,18 @@ public class FootprintTextForPCB {
 
     }
 
-    String output = "Element[\"\" \"" 
+    String output = "";
+    if (createGschemSymbol) {
+      output = "v 20140308 2\n"
+          + "T 50 825 3 12 1 0 0 0 1\n"
+          + "refdes=" + workingText + "\n"
+          + "T 325 175 3 12 1 0 0 0 1\n"
+          + "device=" + workingText + ".fp";
+    } else {
+      output = "Element[\"\" \"" 
         + workingText 
         + "\" \"\" \"\" 0 0 0 -4000 0 100 \"\"]\n(";
+    }
 
     if (workingText.contains("U+")) {
       ArrayList<Integer> unicode
@@ -107,17 +122,25 @@ public class FootprintTextForPCB {
           + font.renderString(unicode,0,0,angle,magnificationRatio)
           + ")\n";
     } else {
-      output = output
-          + font.renderString(workingText,0,0,angle,magnificationRatio)
-          + ")\n"; 
+      if (createGschemSymbol) {
+        output = output
+            + font.renderString(workingText,0,0,angle,magnificationRatio);
+      } else {
+        output = output
+            + font.renderString(workingText,0,0,angle,magnificationRatio)
+            + ")\n";
     }
+
+
     
     String filename = workingText.replaceAll("[^a-zA-Z0-9-]", "_");
 
     if (magnificationRatio != 1.0) {
-      filename = filename + "-" + magnificationRatio + "x.fp";
+      filename = filename + "-" + magnificationRatio + "x";
     }
-    else {
+    if (createGschemSymbol) {
+      filename = filename + ".sym";
+    } else {
       filename = filename + ".fp";
     }
 
@@ -127,8 +150,9 @@ public class FootprintTextForPCB {
     
     System.out.println("Writing \"" 
                        + workingText 
-                       + "\" as silkscreen elements in: " 
+                       + "\" as drawn elements in: " 
                        + filename );
+    }
 
   }
 
@@ -138,6 +162,8 @@ public class FootprintTextForPCB {
     System.out.println("    and X.XXXX is an optional magnification ratio; default = 1.0)\n");
     System.out.println("    and YYYY is an optional angulation of the text, counterclockwise positive, in deci-degrees\n"); 
     System.out.println("    i.e. 450 is 45 degrees counterclockwise, 1800 is upside down, 180 degrees\n");
+    System.out.println("\nUsage: \n\n    java FootprintTextForPCB -cs -t \"Text for conversion to .sym\" -m X.XXXX -a YYYY\n");
+    System.out.println("    generates a 12pt gschem compatible symbol instead of a footprint.\n");
     System.out.println("    If run without any command line arguments, a demonstration footprint file")
 ;
     System.out.println("    called demonstration1234567890.fp, will be generated\n"); 

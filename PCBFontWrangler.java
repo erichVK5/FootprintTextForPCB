@@ -43,6 +43,11 @@ public class PCBFontWrangler {
 
   double fontMagnificationRatio = 1.0;
   long defaultMinimumThickness = 1000; // in centimils, i.e. 10 mil line thickness minimum 
+  boolean createGschemSymbol = false;
+
+  public void exportGSchem() {
+    createGschemSymbol = true;
+  }
 
   public void greekMode() {
     fontData = HersheyGreek.fontData;
@@ -323,7 +328,7 @@ public class PCBFontWrangler {
   // in centimils, and ignores the metric flag and
   // returns a character without rotation or scaling, centred on x,y 
   // with centimil PCB layout dimensions
-  public String drawCentredChar(int c, long xOffset, long yOffset, boolean metric) {
+  public String drawCentredChar(int c, long xOffset, long yOffset, boolean metric, boolean footprintExport) {
     double magRatio = 1.0; // default 1.0, no footprint scaling
     double theta = 0; // default is no rotation
     return drawCentredChar(c, xOffset, yOffset, magRatio, theta, metric);
@@ -362,6 +367,7 @@ public class PCBFontWrangler {
   public String renderKicadText(String theString, long xCoordNm, long yCoordNm, long kicadDecidegrees, long kicadMWidthNm, double footprintMagnificationRatio) {
     setKicadMWidthNm(kicadMWidthNm); // scale to suit .mod definition
     double theta = kicadDecidegrees*Math.PI/1800; // convert to radians
+    boolean renderFootprint = true;
     return renderString(theString, xCoordNm/254, yCoordNm/254, theta, footprintMagnificationRatio);
   }
 
@@ -383,12 +389,16 @@ public class PCBFontWrangler {
     // we then calculate where the string will start, and more
     // specifically, where the centre of the first character
     // will be as x,y cooords in centimils
-    long currentX = (long)((xCoord -
+    long currentX = 0; // gschem expects 0,0 as bottom left hand origin IIRC //
+    long currentY = 0;
+    if (!createGschemSymbol) {
+        currentX = (long)((xCoord -
                            (renderedWidth*Math.cos(theta))/2
                            + (firstCharXOffset*Math.cos(theta)))*footprintMagnificationRatio);
-    long currentY = (long)((yCoord +
+        currentY = (long)((yCoord +
                            (renderedWidth*Math.sin(theta))/2
                            - (firstCharXOffset*Math.sin(theta)))*footprintMagnificationRatio);
+    }
     // we now walk along the centre line of the rendered string
     // which is angled theta radians to the x axis, dropping a
     // rendered character along it at suitable, calculated, spacings,
@@ -513,12 +523,21 @@ public class PCBFontWrangler {
 
         // and finish by generating the centimil unit
         // pcb layout text line with the transformed coords
-        output = output + "ElementLine[" +
-            TrX1 + " " + TrY1 + " " + 
-            TrX2 + " " + TrY2 + " " +
-            finalThickness + "]\n";
+        if (createGschemSymbol) {  // scaling by 1/29 is about right 
+          output = output + "\nL " + // for default 12pt text in gschem
+              TrX1/29 + " " + TrY1/29 + " " +
+              TrX2/29 + " " + TrY2/29 + " " +
+              "3 " + finalThickness/29 + " 2 0 -1 -1";
+        } else {
+          output = output + "ElementLine[" +
+              TrX1 + " " + TrY1 + " " + 
+              TrX2 + " " + TrY2 + " " +
+              finalThickness + "]\n";
+	}
       }
-      output = output + "#\n";
+      if (!createGschemSymbol) {
+        output = output + "#\n";
+      }
     }
     return output;
   }
