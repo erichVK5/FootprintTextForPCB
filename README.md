@@ -7,6 +7,10 @@ Copyright (C) 2015 Erich S. Heinzle, a1039181@gmail.com
 
 This is a command line utility for turning text strings into silkscreen line elements which can then be added to footprints. PCB does not support text elements in footprints, but does support silk screen lines. Without a utility of this nature, those making footprints and seeking to add text have to hand draw the desired text.
 
+PCB-RND ( http://www.repo.hu/projects/pcb-rnd ) now has native support for text with arbitrary rotation on layouts and wihtihin subcircuits (a.k.a. footprints). See pictures in this repo. In addition, PCB-RND also supports text as a solder mask aperture, again, see pictures. PCB-RND also has multiple font support, including polygons within text glyphs, in addition to the line elements supported by gEDA PCB.
+
+PCB-RND can load gEDA PCB layouts, and save in gEDA PCB format, but some of these enhanced features will not be able to be saved in gEDA PCB format. PCB-RND can also save in KiCad and Protel Autotrax format, as well as export in other formats.
+
 v1.1 of the utility uses the free Hershey Sans 1 Stroke Font and outputs 0.01mil (imperial, square bracketed) units. 
 
 v1.2 of the utility will implement Hershey Cyrillic, Greek and Gothic fonts. Cyrillic, Greek and German Gothic are now working, if the -c, -g or -gg flag is used. For cyrillic, text is mapped from an English keyboard layout using the AATSEEL (phonetic) mapping for Cyrillic. Greek mapping is phonetic as well.
